@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold">🎯 Job Tracker</h1>
+        <div class="flex gap-4">
+            <a href="/" class="hover:underline">Dashboard</a>
+            <a href="/jobs/" class="hover:underline">All Jobs</a>
+            <a href="/jobs/add/" class="hover:underline">+ Add Job</a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

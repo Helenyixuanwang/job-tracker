@@ -1,0 +1,121 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">
+            {% if form.instance.pk %}
+                ✏️ Edit Application
+            {% else %}
+                ➕ Add New Application
+            {% endif %}
+        </h2>
+        <a href="/jobs/" class="text-gray-500 hover:underline text-sm">← Back to List</a>
+    </div>
+
+    <div class="bg-white rounded-lg p-6 shadow">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Company Name -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Company Name *
+                    </label>
+                    {{ form.company_name }}
+                </div>
+
+                <!-- Job Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Job Title *
+                    </label>
+                    {{ form.job_title }}
+                </div>
+
+                <!-- Job URL -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Job Posting URL
+                    </label>
+                    {{ form.job_url }}
+                </div>
+
+                <!-- Location -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Location
+                    </label>
+                    {{ form.location }}
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                    </label>
+                    {{ form.status }}
+                </div>
+
+                <!-- Salary Min -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Salary Min ($)
+                    </label>
+                    {{ form.salary_min }}
+                </div>
+
+                <!-- Salary Max -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Salary Max ($)
+                    </label>
+                    {{ form.salary_max }}
+                </div>
+
+                <!-- Checkboxes -->
+                <div class="md:col-span-2 flex gap-6">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        {{ form.is_remote }}
+                        <span class="text-sm text-gray-700">Remote Position</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        {{ form.requires_sponsorship }}
+                        <span class="text-sm text-gray-700">Requires Sponsorship</span>
+                    </label>
+                </div>
+
+                <!-- Notes -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Notes
+                    </label>
+                    {{ form.notes }}
+                </div>
+
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6 flex gap-3">
+                <button type="submit"
+                    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-medium">
+                    {% if form.instance.pk %}
+                        Save Changes
+                    {% else %}
+                        Add Application
+                    {% endif %}
+                </button>
+                <a href="/jobs/"
+                    class="bg-gray-200 text-gray-700 px-6 py-2 rounded hover:bg-gray-300 font-medium">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}
