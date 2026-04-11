@@ -16,13 +16,16 @@ A full-stack job application tracking web app built with Django, FastAPI, Celery
 - **Railway** — Cloud deployment
 
 ## ✨ Features
+- 🔐 User authentication — register, login, logout
+- 👤 User-specific data — each user sees only their own jobs
 - ➕ Add, edit, delete job applications
 - 📊 Dashboard with visual stats and doughnut chart
 - 🔍 Filter applications by status (Applied, Interview, Offer, Rejected)
-- 📄 Export applications to PDF report
+- 📄 Export personalized PDF report with username and date
 - 🔗 REST API with auto-generated Swagger docs
-- ⏰ Automated daily email summary via Celery Beat
+- ⏰ Automated daily personalized email summary via Celery Beat
 - 🐳 Docker containerized PostgreSQL and Redis
+- 🚀 Deployed on Railway with PostgreSQL and Redis
 
 ## 🚀 Getting Started
 
