@@ -111,5 +111,5 @@ Celery Beat automatically sends a daily summary email at 9am with your applicati
 ## 👩‍💻 Author
 Built by **Helen Wang**
 - 🔗 [GitHub](https://github.com/Helenyixuanwang)
-- 💼 [LinkedIn](https://www.linkedin.com/in/YOUR_LINKEDIN)
+- 💼 [LinkedIn](https://www.linkedin.com/in/helenyixuanwang/)
 
