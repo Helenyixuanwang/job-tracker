@@ -1,8 +1,9 @@
 [build]
-builder = "nixpacks"
+builder = "railpack"
 
 [deploy]
 startCommand = "gunicorn jobtracker.wsgi --log-file -"
+preDeployCommand = "python manage.py collectstatic --noinput && python manage.py migrate"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
