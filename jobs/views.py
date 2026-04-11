@@ -6,9 +6,15 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import JobApplication
 from .forms import JobApplicationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
+@login_required
+@login_required
 def dashboard(request):
-    jobs = JobApplication.objects.all()
+    jobs = JobApplication.objects.filter(user=request.user)
     
     context = {
         'total': jobs.count(),
@@ -21,28 +27,32 @@ def dashboard(request):
     }
     return render(request, 'jobs/dashboard.html', context)
 
+@login_required
 def job_list(request):
-    jobs = JobApplication.objects.all()
+    jobs = JobApplication.objects.filter(user=request.user)
     
-    # Filter by status if provided
     status = request.GET.get('status')
     if status:
         jobs = jobs.filter(status=status)
     
     return render(request, 'jobs/job_list.html', {'jobs': jobs})
 
+@login_required
 def job_add(request):
     if request.method == 'POST':
         form = JobApplicationForm(request.POST)
         if form.is_valid():
-            form.save()
+            job = form.save(commit=False)
+            job.user = request.user  # assign to logged-in user
+            job.save()
             return redirect('job_list')
     else:
         form = JobApplicationForm()
     return render(request, 'jobs/job_form.html', {'form': form})
 
+@login_required
 def job_edit(request, pk):
-    job = get_object_or_404(JobApplication, pk=pk)
+    job = get_object_or_404(JobApplication, pk=pk, user=request.user)
     if request.method == 'POST':
         form = JobApplicationForm(request.POST, instance=job)
         if form.is_valid():
@@ -52,30 +62,29 @@ def job_edit(request, pk):
         form = JobApplicationForm(instance=job)
     return render(request, 'jobs/job_form.html', {'form': form})
 
+@login_required
 def job_delete(request, pk):
-    job = get_object_or_404(JobApplication, pk=pk)
+    job = get_object_or_404(JobApplication, pk=pk, user=request.user)
     if request.method == 'POST':
         job.delete()
         return redirect('job_list')
     return render(request, 'jobs/job_confirm_delete.html', {'job': job})
 
+@login_required
 def export_pdf(request):
-    # Create HTTP response with PDF headers
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="job_applications.pdf"'
 
-    # Create PDF document
     doc = SimpleDocTemplate(response, pagesize=letter)
     elements = []
     styles = getSampleStyleSheet()
 
-    # Title
     title = Paragraph("Job Application Report", styles['Title'])
     elements.append(title)
     elements.append(Spacer(1, 12))
 
-    # Stats summary
-    jobs = JobApplication.objects.all()
+    jobs = JobApplication.objects.filter(user=request.user)  # only user's jobs
+    
     stats_text = f"""
         Total Applications: {jobs.count()} | 
         Interviews: {jobs.filter(status='interview').count()} | 
@@ -86,10 +95,8 @@ def export_pdf(request):
     elements.append(stats)
     elements.append(Spacer(1, 20))
 
-    # Table header
     data = [['Company', 'Job Title', 'Status', 'Location', 'Remote', 'Date Applied']]
 
-    # Table rows
     for job in jobs:
         data.append([
             job.company_name,
@@ -100,10 +107,8 @@ def export_pdf(request):
             str(job.date_applied),
         ])
 
-    # Create and style the table
     table = Table(data, colWidths=[100, 130, 70, 90, 50, 80])
     table.setStyle(TableStyle([
-        # Header row
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2563EB')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
@@ -111,8 +116,6 @@ def export_pdf(request):
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
         ('TOPPADDING', (0, 0), (-1, 0), 10),
-
-        # Data rows
         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 1), (-1, -1), 9),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), 
@@ -121,8 +124,6 @@ def export_pdf(request):
         ('TOPPADDING', (0, 1), (-1, -1), 8),
         ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
         ('LEFTPADDING', (0, 0), (-1, -1), 8),
-
-        # Grid
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#E5E7EB')),
         ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#2563EB')),
     ]))
@@ -130,3 +131,29 @@ def export_pdf(request):
     elements.append(table)
     doc.build(elements)
     return response
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'registration/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
