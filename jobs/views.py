@@ -10,6 +10,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from datetime import date
 
 @login_required
 @login_required
@@ -81,6 +82,14 @@ def export_pdf(request):
 
     title = Paragraph("Job Application Report", styles['Title'])
     elements.append(title)
+    elements.append(Spacer(1, 6))
+
+# Add user info
+    user_info = Paragraph(
+    f"Generated for: {request.user.username} | Date: {date.today().strftime('%B %d, %Y')}",
+    styles['Normal']
+)
+    elements.append(user_info)
     elements.append(Spacer(1, 12))
 
     jobs = JobApplication.objects.filter(user=request.user)  # only user's jobs
