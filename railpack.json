@@ -1,0 +1,5 @@
+{
+    "providers": ["python"],
+    "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
+    "startCommand": "gunicorn jobtracker.wsgi --log-file -"
+}
