@@ -109,13 +109,13 @@ celery -A jobtracker beat --loglevel=info
 | `/docs` | GET | Swagger UI docs |
 
 ## 🔧 Architecture
-\`\`\`
+```
 Browser  →  Django (port 8000)  →  PostgreSQL
                     ↓
               FastAPI (port 8001) →  Swagger UI
                     ↓
          Celery + Redis  →  Daily Email Summary
-\`\`\`
+```
 
 ## 📧 Daily Email Summary
 Celery Beat automatically sends a daily summary email at 9am with your application stats including total applications, interviews, offers, and rejections.
