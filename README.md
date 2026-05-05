@@ -1,8 +1,16 @@
 # 🎯 Job Application Tracker
 
+
+[![CI](https://github.com/Helenyixuanwang/job-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/Helenyixuanwang/job-tracker/actions/workflows/ci.yml)
+
 🌐 **Live Demo:** https://job-tracker-production-4f92.up.railway.app
 
 A full-stack job application tracking web app built with Django, FastAPI, Celery, Redis, PostgreSQL, and Docker. Designed to help job seekers organize and monitor their applications during the job search process.
+
+## 🔄 CI/CD Pipeline
+git push origin main
+→ GitHub Actions: Python 3.12 + pip install + syntax check + Django system check
+→ if ✅ → Railway auto-deploys to production
 
 ## 🛠️ Tech Stack
 - **Django** — Web framework
@@ -14,6 +22,7 @@ A full-stack job application tracking web app built with Django, FastAPI, Celery
 - **Docker** — Local containerization
 - **Tailwind CSS** — Styling
 - **Railway** — Cloud deployment
+- **GitHub Actions** — CI/CD
 
 ## ✨ Features
 - 🔐 User authentication — register, login, logout
